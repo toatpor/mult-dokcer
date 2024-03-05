@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  # name of servise can assume as host for container
+  # different name of service is like domain of sort
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+  redis:
+    # like engine need to install first
+    image: "redis:latest"
+
+  api:
+    # build image app
+    build:
+      dockerfile: Dockerfile.dev
+      # look dockerfile.dev in server directory using context
+      context: ./api
+    volumes:
+      # dont over write to this files
+      - /app/node_modules
+      # everytime we change inside server file will reflect to app directory inside
+      # app folder of container image
+      - ./api:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      # everything instal client directory : share with app container
+      - ./client:/app
+    environment:
+      - WDS_SOCKET_PORT=0
+
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  nginx:
+    restart: always
+    depends_on:
+      - api
+      - client
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"

@@ -1,0 +1,17 @@
+sudo: required
+services:
+  - docker
+# build image for testing
+before_install:
+  - docker build -t toatpor/react-test -f ./client/Dockerfile.dev ./client
+
+# test running section
+script:
+  - docker run -e CI=true toatpor/react-test npm run test
+
+#  build production image for each one
+after_success:
+  - docker build -t toatpor/multi-client ./client
+  - docker build -t toatpor/multi-api ./api
+  - docker build -t toatpor/multi-nginx ./nginx
+  - docker build -t toatpor/multi-worker ./worker

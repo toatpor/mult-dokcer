@@ -1,7 +1,7 @@
 # for production process
 FROM node:20.11-alpine as builder
 
-WORKDIR "/app"
+WORKDIR /app
 COPY  ./package.json . 
 RUN npm install
 COPY  . .

@@ -15,3 +15,10 @@ after_success:
   - docker build -t toatpor/multi-api ./api
   - docker build -t toatpor/multi-nginx ./nginx
   - docker build -t toatpor/multi-worker ./worker
+  # log in docker li
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #  tale those images and push them to docker hub
+  - docker push toatpor/multi-client
+  - docker push toatpor/multi-api
+  - docker push toatpor/multi-nginx
+  - docker push toatpor/multi-worker

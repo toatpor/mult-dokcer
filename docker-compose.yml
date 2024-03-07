@@ -4,7 +4,7 @@ services:
     image: "rallycoding/multi-client"
     mem_limit: 128m
     hostname: client
-  server:
+  api:
     image: "rallycoding/multi-server"
     mem_limit: 128m
     hostname: api
@@ -12,7 +12,7 @@ services:
       - REDIS_HOST=multi-docker-redis.1tqdw1.ng.0001.apse2.cache.amazonaws.com
       - REDIS_PORT=6379
       - PGUSER=postgres
-      - PGHOST=multi-docker-postgres.cpkm2g2kwtvd.ap-southeast-2.rds.amazonaws.com
+      - PGHOST=multis-docker-postgres.cpkm2g2kwtvd.ap-southeast-2.rds.amazonaws.com
       - PGDATABASE=fibvalues
       - PGPASSWORD=postgrespassword
       - PGPORT=5432

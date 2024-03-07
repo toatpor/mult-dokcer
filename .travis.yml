@@ -1,7 +1,9 @@
+#  useing travis to build production
+
 sudo: required
 services:
   - docker
-# build image for testing
+# build image for testing for react app
 before_install:
   - docker build -t toatpor/react-test -f ./client/Dockerfile.dev ./client
 
@@ -22,3 +24,15 @@ after_success:
   - docker push toatpor/multi-api
   - docker push toatpor/multi-nginx
   - docker push toatpor/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-southeast-2"
+  app: multi-docker
+  env: Multi-docker-env
+  bucket_name: elasticbeanstalk-ap-southeast-2-637423331546
+  bucket_path: multi-docker
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: "$AWS_SECRET_KEY"
